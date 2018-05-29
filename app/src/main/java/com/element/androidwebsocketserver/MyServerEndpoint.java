@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@ServerEndpoint(value = "/chat", encoders = MessageEncoder.class, decoders = MessageDecoder.class)
+@ServerEndpoint(value = "/chat")
 public class MyServerEndpoint {
 
     static Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
@@ -22,12 +22,12 @@ public class MyServerEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Message message, Session session) throws IOException, EncodeException {
+    public void onMessage(String message, Session session) throws IOException, EncodeException {
         //broadcast the message
-        System.out.println("got message from " + message.getSender() + " : " + message.getContent());
+        System.out.println("got message " + message);
         for (Session peer : peers) {
             if (!session.getId().equals(peer.getId())) { // do not resend the message to its sender
-                peer.getBasicRemote().sendObject(message);
+                peer.getBasicRemote().sendText(message);
             }
         }
     }
@@ -38,11 +38,11 @@ public class MyServerEndpoint {
         peers.remove(session);
         //notify peers about leaving the chat room
         for (Session peer : peers) {
-            Message message = new Message();
-            message.setSender("Server");
-            message.setContent(String.format("%s left the chat room", session.getId()));
-            message.setReceived(new Date());
-            peer.getBasicRemote().sendObject(message);
+            //Message message = new Message();
+            //message.setSender("Server");
+            //message.setContent(String.format("%s left the chat room", session.getId()));
+            //message.setReceived(new Date());
+            peer.getBasicRemote().sendText("client close.");
         }
     }
 
