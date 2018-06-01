@@ -37,13 +37,13 @@ public class MyServerEndpoint {
         System.out.println(String.format("%s left the chat room.", session.getId()));
         peers.remove(session);
         //notify peers about leaving the chat room
-        for (Session peer : peers) {
+        /*for (Session peer : peers) {
             //Message message = new Message();
             //message.setSender("Server");
             //message.setContent(String.format("%s left the chat room", session.getId()));
             //message.setReceived(new Date());
             peer.getBasicRemote().sendText("client close.");
-        }
+        }*/
     }
 
 }
